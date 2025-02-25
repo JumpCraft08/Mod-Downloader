@@ -1,99 +1,11 @@
 {
-    "version_mc": "1.21.1",
+    "version_mc": "1.21.4",
     "mod_loader": "fabric",
-    "incluir_modpacks": false,
+    "incluir_modpacks": true,
     "mods": [
         {
             "nombre": "ItemPhysic Lite",
             "modrinth_id": "OuyCgP8t"
-        },
-        {
-            "nombre": "CreativeCore",
-            "modrinth_id": "OsZiaDHq"
-        },
-        {
-            "nombre": "Freecam",
-            "modrinth_id": "XeEZ3fK2"
-        },
-        {
-            "nombre": "Visuality",
-            "modrinth_id": "rI0hvYcd"
-        },
-        {
-            "nombre": "Inventory HUD+",
-            "curseforge_url": "https://www.curseforge.com/minecraft/mc-mods/inventory-hud-forge"
-        },
-        {
-            "nombre": "Not Enough Animations",
-            "modrinth_id": "MPCX6s5C"
-        },
-        {
-            "nombre": "Xaero's World Map",
-            "modrinth_id": "NcUtCpym"
-        },
-        {
-            "nombre": "Blur+",
-            "modrinth_id": "NK39zBp2"
-        },
-        {
-            "nombre": "Xaero's Minimap",
-            "modrinth_id": "1bokaNcj"
-        },
-        {
-            "nombre": "Jade",
-            "modrinth_id": "nvQzSEkH"
-        },
-        {
-            "nombre": "Sound Physics Remastered",
-            "modrinth_id": "qyVF9oeo"
-        },
-        {
-            "nombre": "Chat Heads",
-            "modrinth_id": "Wb5oqrBJ"
-        },
-        {
-            "nombre": "Shulker Box Tooltip",
-            "modrinth_id": "2M01OLQq"
-        },
-        {
-            "nombre": "Cherished Worlds",
-            "modrinth_id": "3azQ6p0W"
-        },
-        {
-            "nombre": "Better Statistics Screen",
-            "modrinth_id": "n6PXGAoM"
-        },
-        {
-            "nombre": "TCDCommons API (Better Statistics Screen)",
-            "modrinth_id": "Eldc1g37"
-        },
-        {
-            "nombre": "Bobby",
-            "modrinth_id": "M08ruV16"
-        },
-        {
-            "nombre": "Nvidium",
-            "modrinth_id": "SfMw2IZN"
-        },
-        {
-            "nombre": "Better Third Person",
-            "modrinth_id": "G1s2WpNo"
-        },
-        {
-            "nombre": "Advancement Plaques",
-            "modrinth_id": "9NM0dXub"
-        },
-        {
-            "nombre": "Iceberg",
-            "modrinth_id": "5faXoLqX"
-        },
-        {
-            "nombre": "Eating Animation",
-            "modrinth_id": "rUgZvGzi"
-        },
-        {
-            "nombre": "Cat Eyes",
-            "curseforge_url": "https://www.curseforge.com/minecraft/mc-mods/cat-eyes-night-vision-toggle-mod"
         }
     ],
     "modpacks": [
@@ -106,5 +18,6 @@
             "modrinth_id": "5FFgwNNP"
         }
     ],
-    "borrar_.minecraft_al_instalar": false
+    "borrar_.minecraft_al_instalar": false,
+    "limpiar_al_descargar": true
 }

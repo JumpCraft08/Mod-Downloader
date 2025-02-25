@@ -58,9 +58,17 @@ def descomprimir_mrpack(archivo_mrpack, nombre_modpack):
 
         # Limpiar
         os.remove(archivo_mrpack)
+
+        # Si la carpeta "modpacks" está vacía después de borrar los archivos, elimínala
+        modpacks_path = "downloads/modpacks"
+        if os.path.exists(modpacks_path) and not os.listdir(modpacks_path):
+            shutil.rmtree(modpacks_path)
+
         shutil.rmtree(carpeta_modpack)
+
     except Exception as e:
         print(f"Error: {e}")
+
 
 def mover_a_minecraft():
     minecraft_path = os.path.expandvars(r"%APPDATA%\.minecraft")
@@ -112,6 +120,9 @@ def mover_a_minecraft():
     time.sleep(3)
 
 def descargar_mods():
+    if config.get("limpiar_al_descargar", False) and os.path.exists("downloads"):
+        shutil.rmtree("downloads")
+    
     os.makedirs("downloads/mods", exist_ok=True)
     os.makedirs("downloads/resourcepacks", exist_ok=True)
 
@@ -131,8 +142,25 @@ def descargar_mods():
             webbrowser.open(f"{mod['curseforge_url']}/files/all?version={config['version_mc']}")
             print(f"Ve a la página para descargar manualmente {mod['nombre']}")
 
+    # Descargar modpacks si la opción está activada
+    if config.get("incluir_modpacks", False):
+        os.makedirs("downloads/modpacks", exist_ok=True)
+        for modpack in config.get("modpacks", []):
+            print(f"Descargando modpack: {modpack['nombre']}...")
+            if "modrinth_id" in modpack:
+                for v in requests.get(f"https://api.modrinth.com/v2/project/{modpack['modrinth_id']}/version").json():
+                    if config["version_mc"] in v["game_versions"]:
+                        archivo_mrpack = f"downloads/modpacks/{v['files'][0]['filename']}"
+                        with requests.get(v["files"][0]["url"], stream=True) as res, open(archivo_mrpack, "wb") as file:
+                            for chunk in res.iter_content(1024): file.write(chunk)
+                        descomprimir_mrpack(archivo_mrpack, modpack["nombre"])  # Descomprimir después de descargar
+                        break
+                else:
+                    print(f"Error: {modpack['nombre']} no encontrado en la versión {config['version_mc']}.")
+
     print("Descarga completada. Cerrando en 3 segundos...")
     time.sleep(3)
+
 
 def menu():
     while True:
@@ -148,19 +176,22 @@ def menu():
                 reset = "\033[0m"
                 incluir_modpacks = "Sí" if config.get("incluir_modpacks", True) else "No"
                 borrar_minecraft = "Sí" if config.get("borrar_.minecraft_al_instalar", False) else "No"
+                limpiar_descargar = "Sí" if config.get("limpiar_al_descargar", False) else "No"
 
                 print(f"[1] Seleccionar versión de Minecraft  {verde}{config['version_mc']}{reset}")
                 print(f"[2] Seleccionar Loader                {verde}{config['mod_loader']}{reset}")
                 print(f"[3] Incluir Modpacks                  {verde}{incluir_modpacks}{reset}")
                 print(f"[4] Borrar mods al instalar           {verde}{borrar_minecraft}{reset}")
-                print("[5] Volver")
+                print(f"[5] Limpiar al descargar             {verde}{limpiar_descargar}{reset}")
+                print("[6] Volver")
                 
                 opcion_config = input("Opción: ").strip()
                 if opcion_config == "1": config["version_mc"] = input("Versión de Minecraft: ").strip()
                 elif opcion_config == "2": config["mod_loader"] = input("Loader (fabric/forge/neoforge): ").strip().lower()
                 elif opcion_config == "3": config["incluir_modpacks"] = input("¿Incluir Modpacks? (s/n): ").strip().lower() != "n"
                 elif opcion_config == "4": config["borrar_.minecraft_al_instalar"] = input("¿Borrar carpetas de .minecraft antes de instalar? (s/n): ").strip().lower() == "s"
-                elif opcion_config == "5": break
+                elif opcion_config == "5": config["limpiar_al_descargar"] = input("¿Limpiar la carpeta 'downloads' antes de descargar? (s/n): ").strip().lower() == "s"
+                elif opcion_config == "6": break
                 guardar_config()
         elif opcion == "4": exit("Saliendo...")
 
