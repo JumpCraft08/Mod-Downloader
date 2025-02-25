@@ -1,4 +1,4 @@
-import json, os, time, webbrowser, zipfile, shutil, requests
+import json, os, time, webbrowser, zipfile, shutil
 
 # Verificación de la dependencia 'requests'
 try:
@@ -11,10 +11,40 @@ except ImportError:
     else:
         exit("No se puede ejecutar sin 'requests'.")
 
-# Cargar configuración
+# Configuración integrada en el archivo Python
+config_integrada = {
+    "version_mc": "1.21.4",
+    "mod_loader": "fabric",
+    "incluir_modpacks": True,
+    "mods": [
+        {
+            "nombre": "ItemPhysic Lite",
+            "modrinth_id": "OuyCgP8t"
+        }
+    ],
+    "modpacks": [
+        {
+            "nombre": "Fabulously Optimized",
+            "modrinth_id": "1KVo5zza"
+        },
+        {
+            "nombre": "Cobblemon",
+            "modrinth_id": "5FFgwNNP"
+        }
+    ],
+    "borrar_.minecraft_al_instalar": False,
+    "limpiar_al_descargar": True
+}
+
+# Cargar configuración desde mods.json si existe, de lo contrario usar la configuración integrada
 config_file = "mods.json"
-if not os.path.exists(config_file): exit(f"Error: No se encontró '{config_file}'.")
-config = json.load(open(config_file, encoding="utf-8"))
+if os.path.exists(config_file):
+    with open(config_file, "r", encoding="utf-8") as f:
+        config = json.load(f)
+else:
+    config = config_integrada
+    with open(config_file, "w", encoding="utf-8") as f:
+        json.dump(config, f, indent=4)
 
 def guardar_config():
     with open(config_file, "w", encoding="utf-8") as f:
@@ -68,7 +98,6 @@ def descomprimir_mrpack(archivo_mrpack, nombre_modpack):
 
     except Exception as e:
         print(f"Error: {e}")
-
 
 def mover_a_minecraft():
     minecraft_path = os.path.expandvars(r"%APPDATA%\.minecraft")
@@ -157,10 +186,8 @@ def descargar_mods():
                         break
                 else:
                     print(f"Error: {modpack['nombre']} no encontrado en la versión {config['version_mc']}.")
-
     print("Descarga completada. Cerrando en 3 segundos...")
     time.sleep(3)
-
 
 def menu():
     while True:
@@ -189,10 +216,12 @@ def menu():
                 if opcion_config == "1": config["version_mc"] = input("Versión de Minecraft: ").strip()
                 elif opcion_config == "2": config["mod_loader"] = input("Loader (fabric/forge/neoforge): ").strip().lower()
                 elif opcion_config == "3": config["incluir_modpacks"] = input("¿Incluir Modpacks? (s/n): ").strip().lower() != "n"
-                elif opcion_config == "4": config["borrar_.minecraft_al_instalar"] = input("¿Borrar carpetas de .minecraft antes de instalar? (s/n): ").strip().lower() == "s"
-                elif opcion_config == "5": config["limpiar_al_descargar"] = input("¿Limpiar la carpeta 'downloads' antes de descargar? (s/n): ").strip().lower() == "s"
-                elif opcion_config == "6": break
-                guardar_config()
-        elif opcion == "4": exit("Saliendo...")
+                elif opcion_config == "4": config["borrar_.minecraft_al_instalar"] = input("¿Borrar la carpeta .minecraft al instalar? (s/n): ").strip().lower() != "n"
+                elif opcion_config == "5": config["limpiar_al_descargar"] = input("¿Limpiar la carpeta 'downloads' al descargar? (s/n): ").strip().lower() != "n"
+                elif opcion_config == "6":
+                    guardar_config()
+                    break
+
+        elif opcion == "4": exit()
 
 menu()
